@@ -3,6 +3,7 @@
 #include "src/chell.h"
 #include "unistd.h"
 #include "getopt.h"
+#include "stdlib.h"
 
 void set_commandline_options(chell_state_t *state, int argc, char **argv);
 
