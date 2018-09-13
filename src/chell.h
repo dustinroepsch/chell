@@ -9,8 +9,10 @@ typedef struct
 
 } chell_state_t;
 
-chell_state_t *new_chell(const char *prompt);
+chell_state_t *new_chell();
 
 void delete_chell(chell_state_t **state);
+
+void chell_set_prompt(chell_state_t *state, const char *prompt);
 
 #endif
