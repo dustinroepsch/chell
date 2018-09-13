@@ -17,7 +17,7 @@ int main(int argc, char **argv)
     {
         printf("%s", chell->prompt);
         readline(chell);
-        printf("%s\n", chell->currentLine);
+        printf("%s", chell->currentLine);
     }
 
     delete_chell(&chell);
