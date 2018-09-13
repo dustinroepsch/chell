@@ -10,6 +10,7 @@ chell_state_t *new_chell()
     chell_set_prompt(state, NULL);
     state->lineCapacity = CHELL_INITIAL_LINE_CAPACITY;
     state->currentLine = malloc(CHELL_INITIAL_LINE_CAPACITY);
+    strcpy(state->currentLine, "");
     return state;
 }
 

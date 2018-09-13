@@ -4,6 +4,7 @@
 #include "unistd.h"
 #include "getopt.h"
 #include "stdlib.h"
+#include "string.h"
 
 void set_commandline_options(chell_state_t *state, int argc, char **argv);
 
@@ -12,13 +13,13 @@ int main(int argc, char **argv)
     chell_state_t *chell = new_chell();
     set_commandline_options(chell, argc, argv);
 
-    while (1)
+    while (strcmp(chell->currentLine, "exit\n") != 0)
     {
+        printf("%s", chell->prompt);
         readline(chell);
-        printf("%zu: %s\n", chell->lineCapacity, chell->currentLine);
+        printf("%s\n", chell->currentLine);
     }
 
-    printf("%s", chell->prompt);
     delete_chell(&chell);
     return 0;
 }
