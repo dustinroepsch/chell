@@ -41,31 +41,41 @@ void readline(chell_state_t *state)
     getline(&(state->currentLine), &(state->lineCapacity), stdin);
 }
 
-int attempt_built_in_command(const char* program,  char** const args, chell_state_t* state) {
-    if (strcmp(program, "exit") == 0) {
+int attempt_built_in_command(const char *program, char **const args, chell_state_t *state)
+{
+    if (strcmp(program, "exit") == 0)
+    {
         state->shouldExit = 1;
         return 1;
     }
-    if (strcmp(program, "pid") == 0) {
+    if (strcmp(program, "pid") == 0)
+    {
         printf("%d\n", getpid());
         return 1;
     }
-    if (strcmp(program, "ppid") == 0) {
+    if (strcmp(program, "ppid") == 0)
+    {
         printf("%d\n", getppid());
         return 1;
     }
-    if (strcmp(program, "cd") == 0) {
-        if (args[1] == NULL) {
+    if (strcmp(program, "cd") == 0)
+    {
+        if (args[1] == NULL)
+        {
             chdir(getenv("HOME"));
-        } else {
-            if(chdir(args[1]) == -1) {
+        }
+        else
+        {
+            if (chdir(args[1]) == -1)
+            {
                 printf("Cannot find directory %s\n", args[1]);
             }
         }
         return 1;
     }
-    if (strcmp(program, "pwd") == 0) {
-        char* dir = getcwd(NULL, 0);
+    if (strcmp(program, "pwd") == 0)
+    {
+        char *dir = getcwd(NULL, 0);
         printf("%s\n", dir);
         free(dir);
         return 1;
@@ -78,22 +88,23 @@ void executeline(chell_state_t *state)
 {
     char *currentline = strdup(state->currentLine);
     char *program = strtok(currentline, CHELL_ARG_DELIM);
-    char* filename = strdup(program);
-    filename = basename(filename);
+    char *filename = strdup(program);
 
     char *args[CHELL_MAX_PROGRAM_ARGS];
-    args[0] = filename;
+    args[0] = basename(filename);
 
     int numArgs = 1;
 
-    while (numArgs < CHELL_MAX_PROGRAM_ARGS  - 1 /*to save room for the NULL pointer*/ 
-            && ((args[numArgs] = strtok(NULL, CHELL_ARG_DELIM)) != NULL)) {
+    while (numArgs < CHELL_MAX_PROGRAM_ARGS - 1 /*to save room for the NULL pointer*/
+           && ((args[numArgs] = strtok(NULL, CHELL_ARG_DELIM)) != NULL))
+    {
         numArgs++;
     }
 
-    args[numArgs] = NULL; /* Required for execvp to know how many args there are*/ 
+    args[numArgs] = NULL; /* Required for execvp to know how many args there are*/
 
-    if (attempt_built_in_command(program, args, state)) {
+    if (attempt_built_in_command(program, args, state))
+    {
         goto cleanup; /*can't just return because we need to free some pointers */
     }
 
@@ -101,11 +112,10 @@ void executeline(chell_state_t *state)
 
     if (processId == 0)
     {
-        if (-1 == execvp(program, args)) {
+        if (-1 == execvp(program, args))
+        {
             printf("Unknown executable %s\n", program);
-            /*exit the child with cleanup*/
-            strcpy(state->currentLine, "exit\n");
-            goto cleanup;
+            exit(-1);
         }
     }
     else
