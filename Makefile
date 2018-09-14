@@ -1,11 +1,11 @@
 chell : main.o chell.o
-	gcc -Wall -Werror -o chell main.o chell.o
+	gcc -g -Wall -Werror -o chell main.o chell.o
 
 main.o: main.c 
-	gcc -c main.c 
+	gcc -g -Wall -Werror -c main.c 
 
 chell.o: src/chell.c 
-	gcc -c src/chell.c
+	gcc -g -Wall -Werror -c src/chell.c
 
 clean:
 	rm *.o chell

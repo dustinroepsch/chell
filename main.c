@@ -13,11 +13,12 @@ int main(int argc, char **argv)
     chell_state_t *chell = new_chell();
     set_commandline_options(chell, argc, argv);
 
-    while (strcmp(chell->currentLine, "exit\n") != 0)
+    while (!(chell->shouldExit))
     {
         printf("%s", chell->prompt);
         readline(chell);
-        printf("%s", chell->currentLine);
+        executeline(chell);
+        // printf("%s", chell->currentLine);
     }
 
     delete_chell(&chell);
