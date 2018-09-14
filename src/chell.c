@@ -2,6 +2,9 @@
 #include "unistd.h"
 #include "string.h"
 #include "stdlib.h"
+#include <sys/types.h>
+#include <sys/wait.h>
+
 
 chell_state_t *new_chell()
 {
@@ -35,4 +38,24 @@ void chell_set_prompt(chell_state_t *state, const char *prompt)
 void readline(chell_state_t *state)
 {
     getline(&(state->currentLine), &(state->lineCapacity), stdin);
+}
+
+void executeline(chell_state_t *state) 
+{
+    char* currentline = strdup(state->currentLine);
+    char* program = strtok(currentline, " ");
+
+    char* args[1];
+    args[0] = NULL;
+
+    pid_t processId = fork();
+
+
+    if (processId == 0) {
+        execvp(program, args);
+    } else {
+        wait(NULL);
+    }
+
+    free(currentline);
 }

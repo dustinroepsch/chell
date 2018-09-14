@@ -21,4 +21,6 @@ void chell_set_prompt(chell_state_t *state, const char *prompt);
 
 void readline(chell_state_t *state);
 
+void executeline(chell_state_t *state);
+
 #endif
