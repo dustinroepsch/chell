@@ -5,7 +5,6 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-
 chell_state_t *new_chell()
 {
     chell_state_t *state = malloc(sizeof(chell_state_t));
@@ -40,20 +39,22 @@ void readline(chell_state_t *state)
     getline(&(state->currentLine), &(state->lineCapacity), stdin);
 }
 
-void executeline(chell_state_t *state) 
+void executeline(chell_state_t *state)
 {
-    char* currentline = strdup(state->currentLine);
-    char* program = strtok(currentline, " ");
+    char *currentline = strdup(state->currentLine);
+    char *program = strtok(currentline, " ");
 
-    char* args[1];
+    char *args[1];
     args[0] = NULL;
 
     pid_t processId = fork();
 
-
-    if (processId == 0) {
+    if (processId == 0)
+    {
         execvp(program, args);
-    } else {
+    }
+    else
+    {
         wait(NULL);
     }
 
