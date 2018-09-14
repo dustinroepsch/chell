@@ -115,7 +115,9 @@ void executeline(chell_state_t *state)
         if (-1 == execvp(program, args))
         {
             printf("Unknown executable %s\n", program);
-            exit(-1);
+            /* exit program with cleanup */
+            state->shouldExit = 1;
+            goto cleanup;
         }
     }
     else
