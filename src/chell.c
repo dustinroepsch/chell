@@ -124,6 +124,30 @@ int attempt_built_in_command(const char *program, char **const args, chell_state
     return 0;
 }
 
+void print_exit_info(pid_t pid, int status)
+{
+    if (WIFEXITED(status))
+    {
+        printf("Process %d terminated normally\n", pid);
+    }
+    else if (WIFSIGNALED(status))
+    {
+        printf("Process %d terminated due to uncaught signal.\n", pid);
+    }
+    else if (WIFSTOPPED(status))
+    {
+        printf("Process %d stopped.\n", pid);
+    }
+    else if (WIFCONTINUED(status))
+    {
+        printf("Process %d continued.\n", pid);
+    }
+    else if (WEXITSTATUS(status))
+    {
+        printf("Process %d terminated with exit status \n", WEXITSTATUS(status));
+    }
+}
+
 void executeline(chell_state_t *state)
 {
     char *currentline = strdup(state->currentLine);
@@ -163,7 +187,9 @@ void executeline(chell_state_t *state)
     }
     else
     {
-        wait(NULL);
+        int status;
+        pid_t pid = wait(&status);
+        print_exit_info(pid, status);
     }
 
 cleanup:
