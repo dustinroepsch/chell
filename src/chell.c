@@ -5,6 +5,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <libgen.h>
+#include <ctype.h>
 
 chell_state_t *new_chell()
 {
@@ -36,9 +37,21 @@ void chell_set_prompt(chell_state_t *state, const char *prompt)
     }
 }
 
+void removeTrailingWhitespace(char *str)
+{
+    const int length = strlen(str);
+    int i = length - 1;
+    while (i >= 0 && isspace(str[i]))
+    {
+        str[i] = 0;
+        i--;
+    }
+}
+
 void readline(chell_state_t *state)
 {
     getline(&(state->currentLine), &(state->lineCapacity), stdin);
+    removeTrailingWhitespace(state->currentLine);
 }
 
 int attempt_built_in_command(const char *program, char **const args, chell_state_t *state)
