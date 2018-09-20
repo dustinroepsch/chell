@@ -37,7 +37,7 @@ void chell_set_prompt(chell_state_t *state, const char *prompt)
     }
 }
 
-void removeTrailingWhitespace(char *str)
+void remove_trailing_whitespace(char *str)
 {
     const int length = strlen(str);
     int i = length - 1;
@@ -51,7 +51,7 @@ void removeTrailingWhitespace(char *str)
 void readline(chell_state_t *state)
 {
     getline(&(state->currentLine), &(state->lineCapacity), stdin);
-    removeTrailingWhitespace(state->currentLine);
+    remove_trailing_whitespace(state->currentLine);
 }
 
 int attempt_built_in_command(const char *program, char **const args, chell_state_t *state)
