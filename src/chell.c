@@ -93,6 +93,33 @@ int attempt_built_in_command(const char *program, char **const args, chell_state
         free(dir);
         return 1;
     }
+    if (strcmp(program, "set") == 0)
+    {
+        if (args[1] == NULL || args[2] == NULL)
+        {
+            printf("Set takes two arguements\n");
+            return 1;
+        }
+        setenv(args[1], args[2], 1);
+        return 1;
+    }
+
+    if (strcmp(program, "get") == 0)
+    {
+        if (args[1] == NULL)
+        {
+            printf("get takes one arguement\n");
+            return 1;
+        }
+        char *val = getenv(args[1]);
+        if (val == NULL)
+        {
+            printf("Unkown environment variable %s\n", args[1]);
+            return 1;
+        }
+        printf("%s\n", val);
+        return 1;
+    }
 
     return 0;
 }
@@ -125,6 +152,7 @@ void executeline(chell_state_t *state)
 
     if (processId == 0)
     {
+        printf("Process: %d\n", getpid());
         if (-1 == execvp(program, args))
         {
             printf("Unknown executable %s\n", program);
