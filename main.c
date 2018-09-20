@@ -16,9 +16,11 @@ int main(int argc, char **argv)
     while (!(chell->shouldExit))
     {
         printf("%s", chell->prompt);
+        fflush(stdout);
         readline(chell);
         executeline(chell);
         // printf("%s", chell->currentLine);
+        check_if_background_child_exited(chell);
     }
 
     delete_chell(&chell);

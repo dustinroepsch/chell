@@ -16,6 +16,7 @@ chell_state_t *new_chell()
     state->currentLine = malloc(CHELL_INITIAL_LINE_CAPACITY);
     strcpy(state->currentLine, "");
     state->shouldExit = 0;
+    state->numChildren = 0;
     return state;
 }
 
@@ -148,9 +149,27 @@ void print_exit_info(pid_t pid, int status)
     }
 }
 
+int should_run_in_background(char *line)
+{
+    int len = strlen(line);
+    if (len == 0)
+    {
+        return 0;
+    }
+    if (line[len - 1] == '&')
+    {
+        line[len - 1] = 0;
+        remove_trailing_whitespace(line);
+        return 1;
+    }
+    return 0;
+}
+
 void executeline(chell_state_t *state)
 {
     char *currentline = strdup(state->currentLine);
+    int run_in_background = should_run_in_background(currentline);
+
     char *program = strtok(currentline, CHELL_ARG_DELIM);
     char *filename = strdup(program);
 
@@ -187,12 +206,36 @@ void executeline(chell_state_t *state)
     }
     else
     {
-        int status;
-        pid_t pid = wait(&status);
-        print_exit_info(pid, status);
+        if (!run_in_background)
+        {
+            int status;
+            pid_t pid = waitpid(processId, &status, 0);
+            print_exit_info(pid, status);
+        }
+        else
+        {
+            state->children[state->numChildren] = processId;
+            state->numChildren++;
+            /*sleep so that the child has a chance to print its process info before the next chell line is printed*/
+            usleep(100);
+        }
     }
 
 cleanup:
     free(filename);
     free(currentline);
+}
+
+void check_if_background_child_exited(chell_state_t *state)
+{
+    if (state->numChildren > 0)
+    {
+        int status;
+        pid_t pid = waitpid(-1, &status, WNOHANG);
+        if (pid > 0)
+        {
+            print_exit_info(pid, status);
+            state->numChildren--;
+        }
+    }
 }
