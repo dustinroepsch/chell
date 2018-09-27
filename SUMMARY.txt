@@ -1,0 +1,10 @@
+# CPRE 308 Project 1 Summary #
+## Dustin Ryan - Roepsch ##
+y
+While writing this project, I learned a lot about unix system calls. It's really interesting that because of the system calls, a program like a shell can be written entirely in C. 
+I didn't realize that the current directory was managed through OS system calls, I always assumed that the shell kept track of those things itself (by storing a string or something). 
+Learning about `chdir`, `execvp`, and `setenv`, really made the shell just seem like a thin layer over operating system calls.
+
+Additionally, I really like how portable my code ended up being. I started off developing in a Fedora VM to ensure compatibility with the lab computers, but once I was 70% done with the project,
+I realized that my code also compiles and runs on MacOS perfectly fine as well. I did not expect this since this code is so entwined with operating system calls, so it's really cool to see
+that UNIX calls make this portability possible.
