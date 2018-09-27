@@ -7,6 +7,10 @@
 #include <libgen.h>
 #include <ctype.h>
 
+/*
+* Creates a new chell_state_t and sets all of it's variables to sensible defaults.
+* This is basically a constructor.
+*/
 chell_state_t *new_chell()
 {
     chell_state_t *state = malloc(sizeof(chell_state_t));
@@ -20,12 +24,16 @@ chell_state_t *new_chell()
     return state;
 }
 
+/*
+* Free's all the memory allocated during a new_chell calls.
+*/
 void delete_chell(chell_state_t **state)
 {
     free((*state)->currentLine);
     free(*state);
 }
 
+/**Sets the user defined prompt, defaulting to 308sh if the user entered a prompt that was too large*/
 void chell_set_prompt(chell_state_t *state, const char *prompt)
 {
     if (prompt == NULL || strlen(prompt) + 1 /*null byte*/ >= CHELL_PROMPT_ARR_LENGTH)
@@ -38,6 +46,7 @@ void chell_set_prompt(chell_state_t *state, const char *prompt)
     }
 }
 
+/*Removes the whitespace at the end of a string, example "Hello World        \n" -> "Hello World" */
 void remove_trailing_whitespace(char *str)
 {
     const int length = strlen(str);
@@ -49,12 +58,14 @@ void remove_trailing_whitespace(char *str)
     }
 }
 
+/* Reads a line of input and stores it in the chell_state_t */
 void readline(chell_state_t *state)
 {
     getline(&(state->currentLine), &(state->lineCapacity), stdin);
     remove_trailing_whitespace(state->currentLine);
 }
 
+/* Checks the program string to see if it is a built in command. If so, execute the command and return 1, else return 0. */
 int attempt_built_in_command(const char *program, char **const args, chell_state_t *state)
 {
     if (strcmp(program, "exit") == 0)
@@ -125,6 +136,7 @@ int attempt_built_in_command(const char *program, char **const args, chell_state
     return 0;
 }
 
+/* The info that prints when a child exits*/
 void print_exit_info(pid_t pid, int status)
 {
     if (WIFEXITED(status))
@@ -149,6 +161,7 @@ void print_exit_info(pid_t pid, int status)
     }
 }
 
+/*Returns 1 if  a command should run in the background, and removes the & from the command if thats the case, otherwise returns 0*/
 int should_run_in_background(char *line)
 {
     int len = strlen(line);
@@ -165,6 +178,7 @@ int should_run_in_background(char *line)
     return 0;
 }
 
+/* Executes the chell_state_t's current line */
 void executeline(chell_state_t *state)
 {
     char *currentline = strdup(state->currentLine);
@@ -226,6 +240,7 @@ cleanup:
     free(currentline);
 }
 
+/** Waits without haning for a child process and prints it's exit info if there was a child that exited*/
 void check_if_background_child_exited(chell_state_t *state)
 {
     if (state->numChildren > 0)

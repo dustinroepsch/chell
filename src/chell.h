@@ -1,11 +1,15 @@
 #ifndef CHELL_H
 #define CHELL_H
 
-#define CHELL_PROMPT_ARR_LENGTH 100
-#define CHELL_INITIAL_LINE_CAPACITY 16
-#define CHELL_MAX_PROGRAM_ARGS 100
-#define CHELL_ARG_DELIM " \n"
-#define CHELL_MAX_CHILDREN 10000
+#define CHELL_PROMPT_ARR_LENGTH 100 /* Max number of characters the prompt can be, for the -p flag. */
+
+#define CHELL_INITIAL_LINE_CAPACITY 16 /* The starting capacity for calls to getline, but the currentLine array will grow if needed */
+
+#define CHELL_MAX_PROGRAM_ARGS 100 /* Maximum number of arguments a call to execvp can pass. There's no way someone will type a command with more than 100 arguements, and this is much less messy then dynamically regrowing the array*/
+
+#define CHELL_ARG_DELIM " \n" /* The delimeters used to split the line typed by the user*/
+
+#define CHELL_MAX_CHILDREN 10000 /* The max number of child processes chell can have*/
 
 #include <stdio.h>
 #include <sys/types.h>
